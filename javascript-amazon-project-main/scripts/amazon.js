@@ -1,3 +1,5 @@
+import {cart,addToCart} from './cart.js';
+import { products } from '../data/products.js';
 //variables
 const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
@@ -64,67 +66,43 @@ productContainer.innerHTML=productHtml;
 
 
 
+ //show the all cart quanities
+function updateQuantity(){
+  let allQuantity=0;
+  cart.forEach((item)=>{
+    allQuantity=allQuantity+item.quantity;
+  })
+  cartQuanity.innerHTML=allQuantity;
+  console.log(cart);
+}
 
-//make add to cart button ineractive (add to cart array)
+
+// pop up the added massage when the user click on add to cart
+function showMassage(productId){
+  const massage = document.querySelectorAll('.added-to-cart');
+  massage.forEach((msg)=>{
+    let msgId = msg.dataset.massageAlert;
+    if(msgId===productId){
+      msg.style.opacity='1';
+      setTimeout(()=>{
+        msg.style.opacity='0';
+      },1000)
+    }
+  })
+}
+
+//add event listeners
 const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
 addToCartButtons.forEach((button)=>{
    
   button.addEventListener('click',()=>{
+    //get the specific product id
     const productBeenSelectedId = button.dataset.id;
+    //find the select value of product
     const theValueContainerBeenSelected = button.closest('.product-container');
     const quanitySelection = theValueContainerBeenSelected.querySelector('.select-quantity').value;
-    
-
-    let matchingItem;
-    cart.forEach((item)=>{
-      if(item.id===productBeenSelectedId){
-        matchingItem=item;
-      }
+    addToCart(productBeenSelectedId,quanitySelection);
+    updateQuantity();
+    showMassage(productBeenSelectedId);
     })
-    
-      if(matchingItem){
-        matchingItem.quantity+=Number(quanitySelection);
-      }
-      else{
-        cart.push({
-          id:productBeenSelectedId,
-          quantity:Number(quanitySelection)
-        })
-      }
-   
-     
-
-
-
-
-  //show the all cart quanity
-    let allQuantity=0;
-    cart.forEach((item)=>{
-      allQuantity=allQuantity+item.quantity;
-    })
-    cartQuanity.innerHTML=allQuantity;
-    console.log(cart);
-
-
-    // show the added massage
-        const massage = document.querySelectorAll('.added-to-cart');
-        massage.forEach((msg)=>{
-          let msgId = msg.dataset.massageAlert;
-          if(msgId===productBeenSelectedId){
-            msg.style.opacity='1';
-            setTimeout(()=>{
-              msg.style.opacity='0';
-            },1000)
-          }
-          
-          
-        })
-
-
-    })
-
-
-
-
-
 })
