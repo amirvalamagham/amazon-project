@@ -1,5 +1,6 @@
 import {cart,addToCart} from './cart.js';
 import { products } from '../data/products.js';
+import { currencyFix } from './cart.js';
 //variables
 const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
@@ -29,7 +30,7 @@ productHtml+=`
           </div>
 
           <div class="product-price">
-            $${(item.priceCents/100).toFixed(2)}
+            $${currencyFix(item.priceCents)}
           </div>
 
           <div class="product-quantity-container">
@@ -60,7 +61,6 @@ productHtml+=`
         </div>`;
 
 })
-
 productContainer.innerHTML=productHtml;
 
 
