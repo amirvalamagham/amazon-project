@@ -39,7 +39,7 @@ export function addToCart(productId,userQuantity){
 
 // make currency look correct convert to dollars and show two decimals
 export function currencyFix(number){
-    return (number/100).toFixed(2);
+    return (Math.round(number)/100).toFixed(2);
  }
 
 
