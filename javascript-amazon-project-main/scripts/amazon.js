@@ -1,6 +1,5 @@
-import {cart,addToCart} from './cart.js';
+import {cart} from './cart.js';
 import { products } from '../data/products.js';
-import { currencyFix } from './cart.js';
 //variables
 const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
@@ -23,14 +22,14 @@ productHtml+=`
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${item.rating.stars*10}.png">
+              src="${item.getStars()}">
             <div class="product-rating-count link-primary">
               ${item.rating.count}
             </div>
           </div>
 
           <div class="product-price">
-            $${currencyFix(item.priceCents)}
+           ${item.getPrice()}
           </div>
 
           <div class="product-quantity-container">
@@ -69,11 +68,11 @@ productContainer.innerHTML=productHtml;
  //show the all cart quanities
 function updateQuantity(){
   let allQuantity=0;
-  cart.forEach((item)=>{
+  cart.cartItem.forEach((item)=>{
     allQuantity=allQuantity+item.quantity;
   })
   cartQuanity.innerHTML=allQuantity;
-  console.log(cart);
+  
 }
 
 
@@ -101,8 +100,11 @@ addToCartButtons.forEach((button)=>{
     //find the select value of product
     const theValueContainerBeenSelected = button.closest('.product-container');
     const quanitySelection = theValueContainerBeenSelected.querySelector('.select-quantity').value;
-    addToCart(productBeenSelectedId,quanitySelection);
+    cart.addToCart(productBeenSelectedId,quanitySelection);
     updateQuantity();
     showMassage(productBeenSelectedId);
     })
 })
+
+// on load
+updateQuantity();

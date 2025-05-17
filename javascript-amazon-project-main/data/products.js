@@ -1,3 +1,25 @@
+import { cart } from "../scripts/cart.js";
+class Product{
+    id;
+    image;
+    name;
+    rating;
+    priceCents;
+  constructor(inputProduct){
+    this.id=inputProduct.id;
+    this.image=inputProduct.image;
+     this.name=inputProduct.name;
+    this.rating=inputProduct.rating;
+    this.priceCents=inputProduct.priceCents;
+  }
+
+  getPrice(){
+    return`$${cart.currencyFix(this.priceCents)}`;
+  }
+  getStars(){
+    return `images/ratings/rating-${this.rating.stars*10}.png`
+  }
+}
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -657,4 +679,7 @@ export const products = [
       "mens"
     ]
   }
-];
+].map((newProduct)=>{
+  return new Product(newProduct);
+});
+console.log(products);
