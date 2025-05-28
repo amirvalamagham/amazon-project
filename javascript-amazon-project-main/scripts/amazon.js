@@ -1,11 +1,28 @@
 import {cart} from './cart.js';
-import { products } from '../data/products.js';
+import { products,loadProducts } from '../data/products.js';
 //variables
 const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
 
 
+// get products from backend by fetch
+loadProducts().then(()=>{
+  renderProducts();
+});
 
+
+// get products from backend by promise and callback
+// new Promise((resolve)=>{
+//   loadProducts(()=>{
+//     resolve();
+//   })
+// }).then(()=>{
+//   renderProducts();
+// })
+
+
+
+function renderProducts(){
 //show products on page
 let productHtml='';
 products.forEach((item)=>{
@@ -46,7 +63,7 @@ productHtml+=`
               <option value="10">10</option>
             </select>
           </div>
-
+          ${item.extraInfo()}
           <div class="product-spacer"></div>
 
           <div class="added-to-cart" data-massage-alert=${item.id}>
@@ -64,18 +81,6 @@ productContainer.innerHTML=productHtml;
 
 
 
-
- //show the all cart quanities
-function updateQuantity(){
-  let allQuantity=0;
-  cart.cartItem.forEach((item)=>{
-    allQuantity=allQuantity+item.quantity;
-  })
-  cartQuanity.innerHTML=allQuantity;
-  
-}
-
-
 // pop up the added massage when the user click on add to cart
 function showMassage(productId){
   const massage = document.querySelectorAll('.added-to-cart');
@@ -90,7 +95,7 @@ function showMassage(productId){
   })
 }
 
-//add event listeners
+//add event listeners and make add to cart interactive
 const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
 addToCartButtons.forEach((button)=>{
    
@@ -106,5 +111,23 @@ addToCartButtons.forEach((button)=>{
     })
 })
 
-// on load
+
+
+
+ //show the all cart quanities
+function updateQuantity(){
+  let allQuantity=0;
+  cart.cartItem.forEach((item)=>{
+    allQuantity=allQuantity+item.quantity;
+  })
+  cartQuanity.innerHTML=allQuantity;
+}
 updateQuantity();
+}
+
+
+
+
+
+
+

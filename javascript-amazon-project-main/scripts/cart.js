@@ -3,27 +3,27 @@ export const cart ={
   cartItem:JSON.parse(localStorage.getItem('cart')),
   checkIfCArtIsNull(){
     if (!this.cartItem) {
-      this.cartItem = {
-        id: '83d4ca15-0f35-48f5-b7a3-1ea210004f2e',
+      this.cartItem =[{
+        productId: '83d4ca15-0f35-48f5-b7a3-1ea210004f2e',
         quantity: 1,
-        deliveryOptionID: '1'
+        deliveryOptionId: '1'
       },
       {
-        id: '54e0eccd-8f36-462b-b68a-8182611d9add',
+        productId: '54e0eccd-8f36-462b-b68a-8182611d9add',
         quantity: 2,
-        deliveryOptionID: '2'
+        deliveryOptionId: '2'
       },
       {
-        id: 'dd82ca78-a18b-4e2a-9250-31e67412f98d',
+        productId: 'dd82ca78-a18b-4e2a-9250-31e67412f98d',
         quantity: 3,
-        deliveryOptionID: '3'
-      }
+        deliveryOptionId: '3'
+      }]
     }
   },
-  addToCart(productId,userQuantity){
+  addToCart(userProductId,userQuantity){
     let matchingItem;
     this.cartItem.forEach((Item) => {
-      if (Item.id === productId) {
+      if (Item.productId === userProductId) {
         matchingItem = Item;
       }
     })
@@ -33,9 +33,9 @@ export const cart ={
     }
     else {
       this.cartItem.push({
-        id: productId,
+        productId: userProductId,
         quantity: Number(userQuantity),
-        deliveryOptionID: '1'
+        deliveryOptionId: '1'
       })
     }
     this.saveToLocalStorage();

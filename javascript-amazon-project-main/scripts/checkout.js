@@ -1,10 +1,13 @@
 import { cart } from "./cart.js";
-import { products } from "../data/products.js";
+import { products,loadProducts } from "../data/products.js";
+import { orders,saveOrderToLocalStorage } from "./order.js";
 import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@2.0.0-alpha.4/dist/esm/index.mjs';
 
 
 //variables
 const cartContainer = document.querySelector('.order-summary');
+const checkOutHeader = document.querySelector('.return-to-home-link');
+const placeOrder = document.querySelector('.button-primary');
 const deliveryOptions = [
   {
     deliveryId : '1',
@@ -23,6 +26,10 @@ const deliveryOptions = [
   }
 ];
 
+
+
+
+
 // generate html by reading products in the cart
 function renderTheCheckOutPage(){
 let cartProductsHtml = '';
@@ -31,14 +38,14 @@ let cartProductsHtml = '';
     let matchedItems;
     let matchedDate;
     deliveryOptions.forEach((option)=>{
-      if(option.deliveryId===item.deliveryOptionID){
+      if(option.deliveryId===item.deliveryOptionId){
         matchedDate=option;
       }
     })
     const today = dayjs();
     const addTheDay = today.add(matchedDate.deliveryTime,'days');
     const fromatTheDay = addTheDay.format('dddd MMMM D');
-    const cartId = item.id;
+    const cartId = item.productId;
     products.forEach((product) => {
         if (product.id === cartId) {
             matchedItems = product;
@@ -67,7 +74,7 @@ let cartProductsHtml = '';
                   <span class="update-quantity-link link-primary">
                     Update
                   </span>
-                  <span class="delete-quantity-link link-primary" data-test="${item.id}">
+                  <span class="delete-quantity-link link-primary" data-test="${item.productId}">
                     Delete
                   </span>
                 </div>
@@ -77,7 +84,7 @@ let cartProductsHtml = '';
                 <div class="delivery-options-title">
                   Choose a delivery option:
                 </div>
-                ${generateDeliveryDates(item.id,item)}
+                ${generateDeliveryDates(item.productId,item)}
               </div>
             </div>
           </div>`
@@ -89,13 +96,25 @@ cartContainer.innerHTML=cartProductsHtml;
 
 
 
+// update items in header
+function updateQuantityInCheckOut(){
+let all= 0;
+cart.cartItem.forEach((item)=>{
+  all +=item.quantity;
+})
+checkOutHeader.innerHTML=`${all} items in the cart`;
+}
+
+updateQuantityInCheckOut();
+
+
 // make delete button interactive when pressing it delete the html on page and remove the product from the cart array
 const dltButtons = document.querySelectorAll('.delete-quantity-link');
 dltButtons.forEach((but)=>{
 but.addEventListener('click',()=>{
   const dltId = but.dataset.test;
   cart.cartItem.forEach((items,index)=>{
-    if(dltId===items.id){
+    if(dltId===items.productId){
       cart.cartItem.splice(index,1);
     }
   })
@@ -120,7 +139,7 @@ function generateDeliveryDates(productId,theCartIds){
     const theDatePrice = deliveryOption.priceCents===0?'FREE Shipping':'$'+cart.currencyFix(deliveryOption.priceCents)+' - Shipping';
 
     htmlDate+=`<div class="delivery-option" data-productId="${productId}" data-deliveryId="${deliveryOption.deliveryId}">
-        <input type="radio" ${theCartIds.deliveryOptionID===deliveryOption.deliveryId?'checked':''}
+        <input type="radio" ${theCartIds.deliveryOptionId===deliveryOption.deliveryId?'checked':''}
           class="delivery-option-input"
           name="delivery-option-${productId}">
         <div>
@@ -158,7 +177,7 @@ const tax = 0.1;
 cart.cartItem.forEach((cartItem)=>{
   let matchedP;
   products.forEach((item)=>{
-    if(item.id===cartItem.id){
+    if(item.id===cartItem.productId){
       matchedP=item;
     }
   
@@ -170,18 +189,15 @@ cart.cartItem.forEach((cartItem)=>{
   let matched;
   
   deliveryOptions.forEach((delivery)=>{
-    if(delivery.deliveryId===item.deliveryOptionID){
+    if(delivery.deliveryId===item.deliveryOptionId){
       matched=delivery;
     }
   })
-  
   totalShippingCost+= matched.priceCents;
  })
-
  const totalWithOutTax = totalItemsCost+totalShippingCost;
  const withTax= totalWithOutTax*0.1;
  const totalCost = withTax+totalWithOutTax;
-
 const productCostEl = document.querySelector('.product-cost').innerHTML=`$${cart.currencyFix(totalItemsCost)}`; 
 const productShippingCostEl = document.querySelector('.product-shipping-cost').innerHTML=`$${cart.currencyFix(totalShippingCost)}`;
 const beforeTaxAllEl= document.querySelector('.without-tax').innerHTML=`$${cart.currencyFix(totalWithOutTax)}`;
@@ -190,26 +206,46 @@ const totalCostsWithTax= document.querySelector('.all').innerHTML=`$${cart.curre
 }
 
  // change the delivery time and id on cart page 
- function updateDeliveryTime(productId,newDeliveryOptionId){
+ function updateDeliveryTime(prId,newDeliveryOptionId){
   let matchedItems;
   cart.cartItem.forEach((item)=>{
-    if(item.id===productId){
+    if(item.productId===prId){
       matchedItems=item;
      
     }
-
   })
-  matchedItems.deliveryOptionID=newDeliveryOptionId;
+  matchedItems.deliveryOptionId=newDeliveryOptionId;
   cart.saveToLocalStorage();
  }
 
-
-
-
-
- 
-
-
 //on load
-renderTheCheckOutPage();
+// loadProducts().then(()=>{
+//   renderTheCheckOutPage();
+// })
+async function loadPage(){
+  await loadProducts();
+  renderTheCheckOutPage();
+}
 
+loadPage();
+
+
+
+//submit the order and send it to backend and get the response
+async function sendOrder(){
+  const message = await fetch('https://supersimplebackend.dev/orders',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      cart:cart.cartItem
+    })
+  })
+  const response = await message.json();
+  orders.push(response);
+  saveOrderToLocalStorage();
+  console.log(orders);
+}
+
+placeOrder.addEventListener('click',sendOrder);
