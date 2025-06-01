@@ -45,7 +45,14 @@ export const cart ={
   },
   saveToLocalStorage(){
     localStorage.setItem('cart', JSON.stringify(this.cartItem));
-  }
+  },
+updateQuantity(){
+  let allQuantity=0;
+  cart.cartItem.forEach((item)=>{
+    allQuantity=allQuantity+item.quantity;
+  })
+ return allQuantity;
+}
 }
 // on load
 cart.checkIfCArtIsNull();

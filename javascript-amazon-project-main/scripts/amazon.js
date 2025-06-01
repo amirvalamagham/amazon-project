@@ -110,19 +110,7 @@ addToCartButtons.forEach((button)=>{
     showMassage(productBeenSelectedId);
     })
 })
-
-
-
-
- //show the all cart quanities
-function updateQuantity(){
-  let allQuantity=0;
-  cart.cartItem.forEach((item)=>{
-    allQuantity=allQuantity+item.quantity;
-  })
-  cartQuanity.innerHTML=allQuantity;
-}
-updateQuantity();
+cartQuanity.innerHTML=cart.updateQuantity();
 }
 
 

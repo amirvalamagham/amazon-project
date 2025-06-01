@@ -1,6 +1,6 @@
 import { cart } from "./cart.js";
 import { products,loadProducts } from "../data/products.js";
-import { orders,saveOrderToLocalStorage } from "./order.js";
+import { orders,saveOrderToLocalStorage } from "../data/orderFromBackEnd.js";
 import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@2.0.0-alpha.4/dist/esm/index.mjs';
 
 
@@ -198,11 +198,11 @@ cart.cartItem.forEach((cartItem)=>{
  const totalWithOutTax = totalItemsCost+totalShippingCost;
  const withTax= totalWithOutTax*0.1;
  const totalCost = withTax+totalWithOutTax;
-const productCostEl = document.querySelector('.product-cost').innerHTML=`$${cart.currencyFix(totalItemsCost)}`; 
-const productShippingCostEl = document.querySelector('.product-shipping-cost').innerHTML=`$${cart.currencyFix(totalShippingCost)}`;
-const beforeTaxAllEl= document.querySelector('.without-tax').innerHTML=`$${cart.currencyFix(totalWithOutTax)}`;
-const taxEl= document.querySelector('.tax').innerHTML=`$${cart.currencyFix(withTax)}`;
-const totalCostsWithTax= document.querySelector('.all').innerHTML=`$${cart.currencyFix(totalCost)}`;
+document.querySelector('.product-cost').innerHTML=`$${cart.currencyFix(totalItemsCost)}`; 
+document.querySelector('.product-shipping-cost').innerHTML=`$${cart.currencyFix(totalShippingCost)}`;
+document.querySelector('.without-tax').innerHTML=`$${cart.currencyFix(totalWithOutTax)}`;
+document.querySelector('.tax').innerHTML=`$${cart.currencyFix(withTax)}`;
+document.querySelector('.all').innerHTML=`$${cart.currencyFix(totalCost)}`;
 }
 
  // change the delivery time and id on cart page 
@@ -218,7 +218,7 @@ const totalCostsWithTax= document.querySelector('.all').innerHTML=`$${cart.curre
   cart.saveToLocalStorage();
  }
 
-//on load
+// make function to get products and show on checkout page
 // loadProducts().then(()=>{
 //   renderTheCheckOutPage();
 // })
@@ -227,7 +227,7 @@ async function loadPage(){
   renderTheCheckOutPage();
 }
 
-loadPage();
+
 
 
 
@@ -245,7 +245,12 @@ async function sendOrder(){
   const response = await message.json();
   orders.push(response);
   saveOrderToLocalStorage();
-  console.log(orders);
+  window.location.href='orders.html';
 }
 
 placeOrder.addEventListener('click',sendOrder);
+
+
+
+//on load
+loadPage();

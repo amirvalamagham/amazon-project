@@ -733,7 +733,7 @@ export function loadProducts(){
       }
       return new Product(productDetail);
     })
-    console.log(products);
+    console.log('products has been loaded!!');
   })
   return promise;
 }
