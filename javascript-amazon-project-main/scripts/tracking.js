@@ -1,10 +1,12 @@
 import { orders } from "../data/orderFromBackEnd.js";
 import { loadProducts, products } from "../data/products.js";
+import { cart } from "./cart.js";
 console.log(orders);
 
 
 //variables
 const container = document.querySelector('.main');
+const cartQuanity = document.querySelector('.cart-quantity').innerHTML=cart.updateQuantity();
 
 // get order and product infos by the Url Parameters
 const url = new URL(window.location.href);

@@ -233,7 +233,8 @@ async function loadPage(){
 
 //submit the order and send it to backend and get the response
 async function sendOrder(){
-  const message = await fetch('https://supersimplebackend.dev/orders',{
+  try{
+    const message = await fetch('https://supersimplebackend.dev/orders',{
     method:'POST',
     headers:{
       'Content-Type':'application/json'
@@ -243,9 +244,14 @@ async function sendOrder(){
     })
   })
   const response = await message.json();
-  orders.push(response);
+  orders.unshift(response);
   saveOrderToLocalStorage();
   window.location.href='orders.html';
+  }
+  catch(e){
+    console.log(`در فرستادن سفارش به بک اند دچار میشکل شدیم دوباره امتحان کنید:${e}`);
+  }
+
 }
 
 placeOrder.addEventListener('click',sendOrder);

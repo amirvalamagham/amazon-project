@@ -1,12 +1,12 @@
-import {cart} from './cart.js';
-import { products,loadProducts } from '../data/products.js';
+import { cart } from './cart.js';
+import { products, loadProducts } from '../data/products.js';
 //variables
 const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
 
 
 // get products from backend by fetch
-loadProducts().then(()=>{
+loadProducts().then(() => {
   renderProducts();
 });
 
@@ -22,11 +22,11 @@ loadProducts().then(()=>{
 
 
 
-function renderProducts(){
-//show products on page
-let productHtml='';
-products.forEach((item)=>{
-productHtml+=`
+function renderProducts() {
+  //show products on page
+  let productHtml = '';
+  products.forEach((item) => {
+    productHtml += `
         <div class="product-container">
           <div class="product-image-container">
             <img class="product-image"
@@ -76,41 +76,43 @@ productHtml+=`
           </button>
         </div>`;
 
-})
-productContainer.innerHTML=productHtml;
-
-
-
-// pop up the added massage when the user click on add to cart
-function showMassage(productId){
-  const massage = document.querySelectorAll('.added-to-cart');
-  massage.forEach((msg)=>{
-    let msgId = msg.dataset.massageAlert;
-    if(msgId===productId){
-      msg.style.opacity='1';
-      setTimeout(()=>{
-        msg.style.opacity='0';
-      },1000)
-    }
   })
-}
+  productContainer.innerHTML = productHtml;
 
-//add event listeners and make add to cart interactive
-const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
-addToCartButtons.forEach((button)=>{
-   
-  button.addEventListener('click',()=>{
-    //get the specific product id
-    const productBeenSelectedId = button.dataset.id;
-    //find the select value of product
-    const theValueContainerBeenSelected = button.closest('.product-container');
-    const quanitySelection = theValueContainerBeenSelected.querySelector('.select-quantity').value;
-    cart.addToCart(productBeenSelectedId,quanitySelection);
-    updateQuantity();
-    showMassage(productBeenSelectedId);
+
+
+  // pop up the added massage when the user click on add to cart
+  function showMassage(productId) {
+    const massage = document.querySelectorAll('.added-to-cart');
+    massage.forEach((msg) => {
+      let msgId = msg.dataset.massageAlert;
+      if (msgId === productId) {
+        msg.style.opacity = '1';
+        setTimeout(() => {
+          msg.style.opacity = '0';
+        }, 1000)
+      }
     })
-})
-cartQuanity.innerHTML=cart.updateQuantity();
+  }
+
+  //add event listeners and make add to cart interactive
+  const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
+  addToCartButtons.forEach((button) => {
+
+    button.addEventListener('click', () => {
+      //get the specific product id
+      const productBeenSelectedId = button.dataset.id;
+      //find the select value of product
+      const theValueContainerBeenSelected = button.closest('.product-container');
+      const quanitySelection = theValueContainerBeenSelected.querySelector('.select-quantity').value;
+      cart.addToCart(productBeenSelectedId, quanitySelection);
+      cart.updateQuantity();
+      renderProducts();
+      showMassage(productBeenSelectedId);
+     
+    })
+  })
+  cartQuanity.innerHTML = cart.updateQuantity();
 }
 
 

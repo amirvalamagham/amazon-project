@@ -724,7 +724,8 @@ export let products= [];
 // }
 
 export function loadProducts(){
-  const promise = fetch('https://supersimplebackend.dev/products').then((response)=>{
+  
+      const promise = fetch('https://supersimplebackend.dev/products').then((response)=>{
     return response.json();
   }).then((data)=>{
     products = data.map((productDetail)=>{
@@ -734,6 +735,11 @@ export function loadProducts(){
       return new Product(productDetail);
     })
     console.log('products has been loaded!!');
+  }).catch((e)=>{
+        console.log(`در گرفتن محصولات از بک اند دچار میشکل شدیم دوباره امتحان کنید:${e}`);
+
   })
   return promise;
+
+
 }
