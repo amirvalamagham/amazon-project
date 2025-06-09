@@ -70,10 +70,12 @@ let cartProductsHtml = '';
                 <div class="product-quantity">
                   <span>
                     Quantity: <span class="quantity-label">${item.quantity}</span>
-                  </span>
-                  <span class="update-quantity-link link-primary">
+                  </span><br><br>
+                  <span class="update-quantity-link link-primary" data-update="${item.productId}">
                     Update
                   </span>
+                  <input class="quantity-input" style="width:30px; border-radius:5px;">
+                  <span class="save-quantity-link link-primary" data-save="${item.productId}">Save</span>
                   <span class="delete-quantity-link link-primary" data-test="${item.productId}">
                     Delete
                   </span>
@@ -123,6 +125,37 @@ but.addEventListener('click',()=>{
   cart.saveToLocalStorage();
   renderTheCheckOutPage();
 })
+})
+
+//make update button interactive
+const updateButtons = document.querySelectorAll('.update-quantity-link');
+updateButtons.forEach((updateBut)=>{
+  const updateId = updateBut.dataset.update;
+  const container = updateBut.closest('.cart-item-container');
+  updateBut.addEventListener('click',()=>{
+    container.classList.add('is-editing-quantity');
+    console.log(container);
+    console.log(updateId);
+  })
+})
+const saveButtons = document.querySelectorAll('.save-quantity-link');
+saveButtons.forEach((saveBut,i)=>{
+  const productSaveId = saveBut.dataset.save;
+  const container = saveBut.closest('.cart-item-container');
+  const inputEl = Array.from(document.querySelectorAll('.quantity-input'));  
+  saveBut.addEventListener('click',()=>{
+      container.classList.remove('is-editing-quantity');
+      const theValue = Number(inputEl[i].value);
+      console.log(productSaveId);
+      cart.cartItem.forEach((item)=>{
+        if(item.productId===productSaveId){
+          item.quantity=theValue;
+        }
+        cart.saveToLocalStorage();
+        renderTheCheckOutPage();
+      })
+      
+  })
 })
 
 
