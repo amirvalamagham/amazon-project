@@ -6,7 +6,6 @@ import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@2.0.0-alpha.4/dist/esm/ind
 
 //variables
 const cartContainer = document.querySelector('.order-summary');
-const checkOutHeader = document.querySelector('.return-to-home-link');
 const placeOrder = document.querySelector('.button-primary');
 const deliveryOptions = [
   {
@@ -98,16 +97,13 @@ cartContainer.innerHTML=cartProductsHtml;
 
 
 
-// update items in header
-function updateQuantityInCheckOut(){
-let all= 0;
-cart.cartItem.forEach((item)=>{
-  all +=item.quantity;
-})
-checkOutHeader.innerHTML=`${all} items in the cart`;
-}
+// show items in header and payment
+const checkOutHeader = document.querySelector('.return-to-home-link');
+checkOutHeader.innerHTML=`${cart.updateQuantity()} items in the cart`;
+const test = document.querySelector('.items');
+test.innerHTML=`Items (${cart.updateQuantity()}) :`;
 
-updateQuantityInCheckOut();
+
 
 
 // make delete button interactive when pressing it delete the html on page and remove the product from the cart array
