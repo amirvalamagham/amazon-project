@@ -5,10 +5,83 @@ const productContainer = document.querySelector('.products-grid');
 const cartQuanity = document.querySelector('.cart-quantity');
 
 
+//get the users search and add it to url
+const searchBarEl = document.querySelector('.search-bar');
+const searchBut = document.querySelector('.search-button');
+let userSearch = '';
+searchBut.addEventListener('click', () => {
+  userSearch = searchBarEl.value;
+  window.location.href = `${window.location.href}?search=${userSearch}`;
+})
+
 // get products from backend by fetch
 loadProducts().then(() => {
-  renderProducts();
+    if (window.location.href.includes('search')) {
+    const url = new URL(window.location.href);
+    const theUserSearch = url.searchParams.get('search');
+    const clearSearch = theUserSearch.replace('%', ' ');
+    const searchResult = products.filter((item) => {
+     return item.name.includes(clearSearch);
+    })
+      let productHtml = '';
+  searchResult.forEach((item) => {
+    productHtml += `
+        <div class="product-container">
+          <div class="product-image-container">
+            <img class="product-image"
+              src="${item.image}">
+          </div>
+
+          <div class="product-name limit-text-to-2-lines">
+            ${item.name}
+          </div>
+
+          <div class="product-rating-container">
+            <img class="product-rating-stars"
+              src="${item.getStars()}">
+            <div class="product-rating-count link-primary">
+              ${item.rating.count}
+            </div>
+          </div>
+
+          <div class="product-price">
+           ${item.getPrice()}
+          </div>
+
+          <div class="product-quantity-container">
+            <select class="select-quantity">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          ${item.extraInfo()}
+          <div class="product-spacer"></div>
+
+   
+        </div>`;
+
+  })
+  productContainer.innerHTML = productHtml;
+   
+  }
+  else{
+      renderProducts();
+  }
 });
+
+
+
+
+
+
 
 
 // get products from backend by promise and callback
@@ -109,7 +182,7 @@ function renderProducts() {
       cart.updateQuantity();
       renderProducts();
       showMassage(productBeenSelectedId);
-     
+
     })
   })
   cartQuanity.innerHTML = cart.updateQuantity();

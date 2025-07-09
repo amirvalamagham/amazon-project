@@ -33,6 +33,30 @@ sizeChart;
     return `<a href=${this.sizeChart} target="_blank">Sizes</a>`;
   }
 }
+
+export let products= [];
+
+export function loadProducts(){
+  
+      const promise = fetch('https://supersimplebackend.dev/products').then((response)=>{
+    return response.json();
+  }).then((data)=>{
+    products = data.map((productDetail)=>{
+      if(productDetail.type==='clothing'){
+        return new Clothing(productDetail);
+      }
+      return new Product(productDetail);
+    })
+    console.log('products has been loaded!!');
+  }).catch((e)=>{
+        console.log(`در گرفتن محصولات از بک اند دچار میشکل شدیم دوباره امتحان کنید:${e}`);
+
+  })
+  return promise;
+
+
+}
+
 // export const products = [
 //   {
 //     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -704,7 +728,7 @@ sizeChart;
 
 
 // send request to backend and get products 
-export let products= [];
+
 // export function loadProducts(fun){
 
 //   const xhr = new XMLHttpRequest();
@@ -723,23 +747,3 @@ export let products= [];
 //   })
 // }
 
-export function loadProducts(){
-  
-      const promise = fetch('https://supersimplebackend.dev/products').then((response)=>{
-    return response.json();
-  }).then((data)=>{
-    products = data.map((productDetail)=>{
-      if(productDetail.type==='clothing'){
-        return new Clothing(productDetail);
-      }
-      return new Product(productDetail);
-    })
-    console.log('products has been loaded!!');
-  }).catch((e)=>{
-        console.log(`در گرفتن محصولات از بک اند دچار میشکل شدیم دوباره امتحان کنید:${e}`);
-
-  })
-  return promise;
-
-
-}
